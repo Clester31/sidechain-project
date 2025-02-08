@@ -6,4 +6,4 @@
 * Comment for posts
 * Finish the landing page
 * Dedicated song pages
-* Songs should also upload to songs db
+* ~~Songs should also upload to songs db~~

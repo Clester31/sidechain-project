@@ -9,7 +9,7 @@ export default function ProfileBanner({ userInfo }:
     return (
         <div>
             <div className="relative flex justify-center items-center">
-                <img src={userInfo.bannerPic} className="w-2/3 h-64" alt="profile banner" />
+                <img src={userInfo.bannerPic} className="w-2/3 h-64" alt="profile banner" style={{ objectFit: 'cover' }} />
                 <div className="absolute flex w-2/3 p-4">
                     <div className="flex flex-row items-center text-xl gap-8">
                         <img src={userInfo.profilePic} className="w-32 h-32 rounded-full" alt="profile" />

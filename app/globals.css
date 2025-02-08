@@ -16,3 +16,52 @@ body {
   background: var(--background);
   font-family: 'Rubik', Helvetica, sans-serif;
 }
+
+.rhap_container {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 2px solid var(--main_2);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.rhap_container:hover {
+  border-color: var(--main_1);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.rhap_progress-indicator {
+  background-color: var(--main_1);
+}
+
+.rhap_progress-filled {
+  background-color: var(--main_2);
+}
+
+.rhap_controls-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rhap_main-controls-button,
+.rhap_volume-button,
+.rhap_repeat-button {
+  color: var(--main_1) !important;
+}
+
+.rhap_progress-filled,
+.rhap_progress-indicator,
+.rhap_volume-indicator,
+.rhap_volume-filled {
+  background-color: var(--main_1) !important;
+}
+
+.rhap_progress-bar,
+.rhap_volume-bar {
+  background-color: var(--main_2) !important;
+}
+
+.rhap_play-pause-button {
+  transform: translate(-35px, 0);
+}

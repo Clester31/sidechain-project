@@ -1,10 +1,9 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "../firebaseConfig";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Song, User } from "./types";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { Comment, Song, User } from "./types";
 import { v4 as uuidv4 } from 'uuid';
-import ProfileBanner from "./components/profile/ProfileBanner";
 
 export const signUpWithEmail = async (email: string, username: string, password: string) => {
     try {
@@ -181,6 +180,7 @@ export const uploadSong = async (userId: string, userInfo: User | null, songTitl
 
             const newSong: Song = {
                 songId: uuidv4(),
+                userId,
                 title: songTitle,
                 description: songDesc,
                 tags: tagsArray,
@@ -203,8 +203,7 @@ export const uploadSong = async (userId: string, userInfo: User | null, songTitl
                 });
             }
 
-            const userSongsRef = doc(db, `songs/${userId}/${newSong.songId}`);
-            await setDoc(userSongsRef, newSong);
+            await setDoc(doc(db, "songs", newSong.songId), newSong);
         }
     } catch (error: unknown) {
         if (error instanceof Error) {
@@ -217,15 +216,132 @@ export const uploadSong = async (userId: string, userInfo: User | null, songTitl
 
 export const fetchSongs = async (songIds: string[]) => {
     try {
+        console.log(songIds)
         const songs: Song[] = [];
-        for (const songId of songIds) {
-            const songDoc = await getDoc(doc(db, "songs", songId));
-            const songData = songDoc.data();
-            if (songData) {
-                songs.push(songData as Song);
+        if (Array.isArray(songIds)) {
+            for (const songId of songIds) {
+                const songDoc = await getDoc(doc(db, "songs", songId));
+                const songData = songDoc.data();
+                if (songData) {
+                    songs.push(songData as Song);
+                }
             }
         }
         return songs;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw error.message;
+        } else {
+            throw String(error);
+        }
+        
+    }
+}
+
+// fetches and returns a random song from the database
+export const fetchRandomSong = async () => {
+    try {
+        const songsCollection = collection(db, "songs");
+        const songSnapshot = await getDocs(songsCollection);
+        const randomIndex = Math.floor(Math.random() * songSnapshot.docs.length);
+        const randomSongDoc = songSnapshot.docs[randomIndex];
+        return randomSongDoc.data() as Song;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw error.message;
+        } else {
+            throw String(error);
+        }
+        
+    }
+}
+
+// liking and reposting songs
+
+export const likeSong = (userId: string, songInfo: Song) => {
+    try {
+        const userDoc = doc(db, "users", userId);
+        const songDoc = doc(db, "songs", songInfo.songId);
+
+        // update the users liked songs
+        
+        // if the user has already liked the song, we will remove it from the users like list and remove the user from the songs usersLiked list
+        if (songInfo.usersLiked.find(user => user === userId)) {
+            setDoc(userDoc, {
+                likedSongs: songInfo.usersLiked.filter(song => song !== songInfo.songId)
+            }, { merge: true });
+
+            setDoc(songDoc, {
+                usersLiked: songInfo.usersLiked.filter(user => user !== userId)
+            }, { merge: true });
+        } else {
+            // if the user has not liked the song, we will add it to the users liked list and add the user to the songs usersLiked list
+            setDoc(userDoc, {
+                likedSongs: [...songInfo.usersLiked,  songInfo.songId ]
+            }, { merge: true });
+
+            setDoc(songDoc, {
+                usersLiked: [...songInfo.usersLiked,  userId ]  
+            }, { merge: true });
+        }
+        
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw error.message;
+        } else {
+            throw String(error);
+        }
+        
+    }
+}
+
+export const repostSong = (userId: string, songInfo: Song) => {
+    try {
+        const userDoc = doc(db, "users", userId);
+        const songDoc = doc(db, "songs", songInfo.songId);
+
+        if (songInfo.usersReposted.find(user => user === userId)) {
+            setDoc(userDoc, {
+                repostedSongs: songInfo.usersReposted.filter(song => song !== songInfo.songId)
+            }, { merge: true });
+
+            setDoc(songDoc, {
+                usersReposted: songInfo.usersReposted.filter(user => user !== userId)
+            }, { merge: true });
+        } else {
+            setDoc(userDoc, {
+                repostedSongs: [...songInfo.usersReposted,  songInfo.songId ]
+            }, { merge: true });
+
+            setDoc(songDoc, {
+                usersReposted: [...songInfo.usersReposted,  userId ]
+            }, { merge: true });
+        }
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw error.message;
+        } else {
+            throw String(error);
+        }
+    }
+}
+
+export const addComment = async (userId: string, songInfo: Song, comment: Comment) => {
+    try {
+        const userDoc = doc(db, "users", userId);
+        const songDoc = doc(db, "songs", songInfo.songId);
+
+        // fetch userInfo from userId
+        const userInfo: User | null = await fetchUserInfo(userId);
+
+        setDoc(songDoc, {
+            comments: [...songInfo.comments, comment]
+        }, { merge: true });
+        if (userInfo) {
+            setDoc(userDoc, {
+                comments: [...userInfo.comments, comment]
+            }, { merge: true });
+        }
     } catch (error: unknown) {
         if (error instanceof Error) {
             throw error.message;

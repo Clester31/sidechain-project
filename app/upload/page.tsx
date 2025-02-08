@@ -22,6 +22,8 @@ export default function Upload() {
     const [songDesc, setSongDesc] = useState<string>("");
     const [songTags, setSongTags] = useState<string>("");
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     useEffect(() => {
         if (user) {
             setUserId(user.uid);
@@ -35,8 +37,9 @@ export default function Upload() {
         }
     }, [user, userId]);
 
-    const uploadNewSong = () => {
-        uploadSong(
+    const uploadNewSong = async () => {
+        setLoading(true);
+        await uploadSong(
             userId,
             userInfo,
             songTitle,
@@ -149,6 +152,9 @@ export default function Upload() {
                     </button>
                 </div>
             </div>
+            {
+                loading && <div className="animate-pulse">Loading...</div>
+            }
         </div>
     );
 }

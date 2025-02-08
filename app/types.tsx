@@ -11,21 +11,22 @@ export type User = {
     songs: string[];
     createdAt: string;
     likedSongs: string[];
-    reposts: string[];
+    repostedSongs: string[];
     comments: Comment[];
 }
 
 // song
 export type Song = {
     songId: string;
+    userId: string;
     title: string;
     description: string;
     tags: string[];
     artist: string;
     songUrl: string;
     coverArt: string;
-    usersLiked: User[];
-    usersReposted: User[];
+    usersLiked: string[];
+    usersReposted: string[];
     comments: Comment[];
     uploadedAt: string;
 }
@@ -34,6 +35,8 @@ export type Song = {
 export type Comment = {
     commentId: string;
     userId: string;
+    username: string | null;
+    profilePic: string | null;
     songId: string;
     content: string;
     replies: Comment[];
