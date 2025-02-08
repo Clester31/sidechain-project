@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Liter&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --main_1: #54c4ab;
+  --main_2: #0b7886;
+}
+
+body {  
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Rubik', Helvetica, sans-serif;
+}
