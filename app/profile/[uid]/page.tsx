@@ -3,7 +3,7 @@
 import { fetchUserInfo } from "@/app/auth";
 import ProfileBanner from "@/app/components/profile/ProfileBanner";
 import ProfileNav from "@/app/components/profile/ProfileNav";
-import { User } from "@/app/types";
+import { Song, User } from "@/app/types";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
@@ -16,14 +16,24 @@ export default function Profile() {
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [navMode, setNavMode] = useState<string>('songs');
 
+    const [userSongs, setUserSongs] = useState<Song[]>([]);
+    const [userLikes, setUserLikes] = useState<Song[]>([]);
+    const [userReposts, setUserReposts] = useState<Song[]>([]);
+
     useEffect(() => {
-        if (uid) {
-            fetchUserInfo(Array.isArray(uid) ? uid[0] : uid).then(fetchedUserInfo => {
-                if (fetchedUserInfo) {
-                    setUserInfo(fetchedUserInfo);
-                }
-            });
+        function getInfo() {
+            if (uid) {
+                fetchUserInfo(Array.isArray(uid) ? uid[0] : uid).then(fetchedUserInfo => {
+                    if (fetchedUserInfo) {
+                        setUserInfo(fetchedUserInfo);
+                        setUserSongs(fetchedUserInfo.songs);
+                        setUserLikes(fetchedUserInfo.likedSongs);
+                        setUserReposts(fetchedUserInfo.reposts);
+                    }
+                });
+            }
         }
+        getInfo();
     })
 
     if (!userInfo) {
