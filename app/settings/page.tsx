@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/AuthContext";
 import { User } from "@/app/types";
 import { useEffect, useState } from "react";
