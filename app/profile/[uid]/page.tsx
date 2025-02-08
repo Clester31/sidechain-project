@@ -1,8 +1,9 @@
 "use client"
 
-import { fetchUserInfo } from "@/app/auth";
+import { fetchSongs, fetchUserInfo } from "@/app/auth";
 import ProfileBanner from "@/app/components/profile/ProfileBanner";
 import ProfileNav from "@/app/components/profile/ProfileNav";
+import SongContainer from "@/app/components/song/SongContainer";
 import { Song, User } from "@/app/types";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -23,12 +24,15 @@ export default function Profile() {
     useEffect(() => {
         function getInfo() {
             if (uid) {
-                fetchUserInfo(Array.isArray(uid) ? uid[0] : uid).then(fetchedUserInfo => {
+                fetchUserInfo(Array.isArray(uid) ? uid[0] : uid).then(async fetchedUserInfo => {
                     if (fetchedUserInfo) {
                         setUserInfo(fetchedUserInfo);
-                        setUserSongs(fetchedUserInfo.songs);
-                        setUserLikes(fetchedUserInfo.likedSongs);
-                        setUserReposts(fetchedUserInfo.reposts);
+                        const fetchedSongs = await fetchSongs(fetchedUserInfo.songs);
+                        const fetchedLikes = await fetchSongs(fetchedUserInfo.likedSongs);
+                        const fetchedReposts = await fetchSongs(fetchedUserInfo.reposts);
+                        setUserSongs(fetchedSongs);
+                        setUserLikes(fetchedLikes);
+                        setUserReposts(fetchedReposts);
                     }
                 });
             }
@@ -51,14 +55,12 @@ export default function Profile() {
             <div className="w-2/3 m-auto">
                 {
                     navMode === 'songs' ? (
-                        <div>
-                            <h1>Songs</h1>
+                        <div className="text-2xl">
+                            <h1 className="my-4">Songs</h1>
                             {
-                                userInfo.songs.map((song, idx) => {
+                                userSongs.map((song, idx) => {
                                     return (
-                                        <div key={idx}>
-                                            <h1>{song}</h1>
-                                        </div>
+                                        <SongContainer key={idx} songInfo={song} />
                                     )
                                 })
                             }

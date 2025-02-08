@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/AuthContext";
 import { User } from "@/app/types";
 import { useEffect, useState } from "react";
-import { fetchUserInfo, updateProfilePicture, updateUsername } from "../auth";
+import { fetchUserInfo, updateProfileBanner, updateProfilePicture, updateUsername } from "../auth";
 
 export default function Settings() {
     const { user } = useAuth(); 
@@ -16,6 +16,8 @@ export default function Settings() {
     const [newUsername, setNewUsername] = useState<string>('');
     const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
     const [profilePicDisplay, setProfilePicDisplay] = useState<string>('');
+    const [newProfileBanner, setNewProfileBanner] = useState<File | null>(null);
+    const [profileBannerDisplay, setProfileBannerDisplay] = useState<string>('');
 
     const changeUsername = () => {
         updateUsername(userId, newUsername);
@@ -24,6 +26,11 @@ export default function Settings() {
 
     const changeProfilePicture = () => {
         updateProfilePicture(userId, newProfilePicture);
+        // react toast
+    }
+
+    const changeProfileBanner = () => {
+        updateProfileBanner(userId, newProfileBanner);
         // react toast
     }
 
@@ -70,6 +77,31 @@ export default function Settings() {
                             Choose File
                         </label>
                         <button disabled={!newProfilePicture} className="bg-main_1 px-4 py-1 text-white disabled:bg-teal-500/35 ml-4 w-32" onClick={changeProfilePicture}>Update</button>
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-col bg-gray-100 p-8 rounded items-center justify-center w-1/2 text-xl gap-4">
+                <h1>Change Profile Banner</h1>
+                <div className="w-full flex flex-col items-center justify-center">
+                    <div className="mb-4">
+                        <img src={profileBannerDisplay || userInfo?.bannerPic} alt="profile banner" className="max-w-full max-h-48 object-contain"/>
+                    </div>
+                    <div>
+                        <label className="bg-main_1 px-4 py-1 text-white cursor-pointer w-32">
+                            <input type="file" className="hidden" onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    setNewProfileBanner(file);
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                        setProfileBannerDisplay(reader.result as string);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            }} />
+                            Choose File
+                        </label>
+                        <button disabled={!newProfileBanner} className="bg-main_1 px-4 py-1 text-white disabled:bg-teal-500/35 ml-4 w-32" onClick={changeProfileBanner}>Update</button>
                     </div>
                 </div>
             </div>

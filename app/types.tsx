@@ -8,10 +8,10 @@ export type User = {
     bio: string;
     followers: User[];
     following: User[];
-    songs: Song[];
+    songs: string[];
     createdAt: string;
-    likedSongs: Song[];
-    reposts: Song[];
+    likedSongs: string[];
+    reposts: string[];
     comments: Comment[];
 }
 
