@@ -153,7 +153,7 @@ export default function Upload() {
                 </div>
             </div>
             {
-                loading && <div className="animate-pulse">Loading...</div>
+                loading && <div className="text-2xl animate-pulse">Loading...</div>
             }
         </div>
     );

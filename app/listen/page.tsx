@@ -40,7 +40,8 @@ export default function Listen() {
 
     return (
         <div className="flex flex-col justify-center items-center h-screen gap-8">
-            <div className="w-2/3">
+            <h1 className="animate-pulse text-3xl text-main_2 font-semibold">Now Listening to:</h1>
+            <div className="w-2/3"> 
             {randomSong && userInfo && (
                 <SongContainer loggedInUserID={userId} userInfo={userInfo} songInfo={randomSong} />
             )}

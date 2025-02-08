@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-h5-audio-player/lib/styles.css';
+import { useRouter } from "next/navigation";
 
 export default function SongContainer({ loggedInUserID, userInfo, songInfo }:
     {
@@ -13,6 +14,8 @@ export default function SongContainer({ loggedInUserID, userInfo, songInfo }:
         songInfo: Song;
     }
 ) {
+    const router = useRouter();
+
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const [isReposted, setIsReposted] = useState<boolean>(false);
     const [commentContent, setCommentContent] = useState<string>('');
@@ -65,8 +68,8 @@ export default function SongContainer({ loggedInUserID, userInfo, songInfo }:
                 </div>
                 <div className="flex flex-col gap-4 w-4/6">
                     <div>
-                        <h1 className="text-2xl font-semibold hover:text-main_2 transition 250 ease-in-out cursor-pointer">{songInfo.title}</h1>
-                        <h2 className="text-lg">{songInfo.artist}</h2>
+                        <h1 className="text-2xl font-semibold hover:text-main_2 transition 250 ease-in-out cursor-pointer" onClick={() => router.push(`/song/${songInfo.songId}`)}>{songInfo.title}</h1>
+                        <h2 className="text-lg hover:text-main_2 cursor-pointer" onClick={() => router.push(`/profile/${songInfo.userId}`)}>{songInfo.artist}</h2>
                     </div>
                     <div className="w-full">
                         <AudioPlayer
@@ -101,11 +104,11 @@ export default function SongContainer({ loggedInUserID, userInfo, songInfo }:
                         songInfo.comments.map(comment => {
                             return (
                                 <div key={comment.commentId} className="flex flex-row gap-4 p-4 bg-gray-100 rounded">
-                                    <div>
-                                        <img src={comment.profilePic ?? '/default-profile-pic.png'} className="w-16 h-16 rounded-full" alt="profile picture" />
+                                    <div className="w-1/6">
+                                        <img src={comment.profilePic ?? '/default-profile-pic.png'} className="h-16 w-16 rounded-full cursor-pointer" alt="profile picture" onClick={() => router.push(`/profile/${comment.userId}`)}/>
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <h1 className="text-lg font-semibold">{comment.username}</h1>
+                                        <h1 className="text-lg font-semibold cursor-pointer hover:text-underline" onClick={() => router.push(`/profile/${comment.userId}`)}>{comment.username}</h1>
                                         <p className="text-lg">{comment.content}</p>
                                     </div>
                                 </div>

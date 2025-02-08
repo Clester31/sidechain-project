@@ -214,6 +214,20 @@ export const uploadSong = async (userId: string, userInfo: User | null, songTitl
     }
 }
 
+export const fetchSong = async (songId: string) => {
+    try {
+        const songDoc = await getDoc(doc(db, "songs", songId));
+        return songDoc.data() as Song
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw error.message;
+        } else {
+            throw String(error);
+        }
+        
+    }
+}
+
 export const fetchSongs = async (songIds: string[]) => {
     try {
         console.log(songIds)
