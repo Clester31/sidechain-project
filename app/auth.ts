@@ -31,7 +31,8 @@ export const signUpWithEmail = async (email: string, username: string, password:
             createdAt: new Date().toISOString(),
             likedSongs: [],
             reposts: [],
-            comments: []
+            comments: [],
+            credits: 0
         });
 
     } catch (error: unknown) {

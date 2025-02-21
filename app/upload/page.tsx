@@ -6,6 +6,7 @@ import { useAuth } from "../lib/AuthContext";
 import { User } from "../types";
 import { fetchUserInfo, uploadSong } from "../auth";
 import { useRouter } from "next/navigation";
+import AskSignUp from "../components/profile/AskSignUp";
 
 export default function Upload() {
     const { user } = useAuth();
@@ -50,6 +51,14 @@ export default function Upload() {
         );
         router.push(`/profile/${userId}`);
     };
+
+    if (!userInfo) {
+            return (
+                <div className="flex justify-center items-center h-screen">
+                    <AskSignUp />
+                </div>
+            )
+        }
 
     return (
         <div className="w-full mt-16 flex flex-col items-center justify-center gap-16 p-8">

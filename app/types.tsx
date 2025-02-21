@@ -13,6 +13,7 @@ export type User = {
     likedSongs: string[];
     repostedSongs: string[];
     comments: Comment[];
+    credits: number;
 }
 
 // song

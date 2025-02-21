@@ -1,6 +1,7 @@
 "use client"
 
 import { fetchSongs, fetchUserInfo } from "@/app/auth";
+import AskSignUp from "@/app/components/profile/AskSignUp";
 import ProfileBanner from "@/app/components/profile/ProfileBanner";
 import ProfileNav from "@/app/components/profile/ProfileNav";
 import SongContainer from "@/app/components/song/SongContainer";
@@ -46,8 +47,8 @@ export default function Profile() {
 
     if (!userInfo) {
         return (
-            <div>
-                <h1>User Not Found</h1>
+            <div className="flex justify-center items-center h-screen">
+                <AskSignUp />
             </div>
         )
     }

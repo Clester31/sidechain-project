@@ -5,6 +5,7 @@ import { Song, User } from "../types";
 import { fetchRandomSong, fetchUserInfo } from "../auth";
 import SongContainer from "../components/song/SongContainer";
 import { useAuth } from "../lib/AuthContext";
+import AskSignUp from "../components/profile/AskSignUp";
 
 export default function Listen() {
     const { user } = useAuth();
@@ -37,6 +38,14 @@ export default function Listen() {
             }
         })
     }, [user, userId])
+
+    if (!userInfo) {
+            return (
+                <div className="flex justify-center items-center h-screen">
+                    <AskSignUp />
+                </div>
+            )
+        }
 
     return (
         <div className="flex flex-col justify-center items-center h-screen gap-8">
